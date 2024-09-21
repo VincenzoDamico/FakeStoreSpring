@@ -1,5 +1,6 @@
 package org.springdemo.progetto.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
@@ -18,10 +19,9 @@ public class Category {
     @Basic
     @Column(name = "description", nullable = true, length = 250)
     private String description;
-
-  /*  @OneToMany(targetEntity = Product.class, mappedBy = "category",cascade=CascadeType.ALL)
- //   @JoinColumn(name="category")
-    private Set<Product> prodottiC;*/
+    @JsonIgnore
+    @OneToMany(targetEntity = Product.class, mappedBy = "category",cascade=CascadeType.ALL)
+    private Set<Product> prodottiC;
 
     @Override
     public boolean equals(Object o) {

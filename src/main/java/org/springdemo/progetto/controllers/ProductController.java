@@ -1,6 +1,5 @@
 package org.springdemo.progetto.controllers;
 
-import org.springdemo.progetto.entities.Category;
 import org.springdemo.progetto.entities.Product;
 import org.springdemo.progetto.services.ProductService;
 
@@ -11,12 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 
 @RestController
-@RequestMapping()
+@RequestMapping("/ApiProduct")
 
 public class ProductController {
     @Autowired
@@ -25,6 +23,7 @@ public class ProductController {
 
     @GetMapping("/productAll")
     public List<Product> getAllProduct() {
+
        for(Product p: productService.getAllProduct()){
            System.out.println(p);
        }
@@ -32,13 +31,25 @@ public class ProductController {
     }
 
     @GetMapping("/productCategory")
-    public List<Product> getProductCategory(   @RequestParam(name = "category")String c) {
+    public List<Product> getProductCategory(   @RequestParam(name = "catname")String catname) {
         //TO-DO verificare che la categoeia esista
 
-        StringTokenizer s=new StringTokenizer(c.substring(8),"\"");
-        String name=s.nextToken();
-        System.out.println(name);
-        List<Product> result =  productService.getProduct(name);
+
+        List<Product> result =  productService.getProductCategory(catname);
+        if (!result.isEmpty()) {
+            for (Product p : result) {
+                System.out.println(p.getName());
+            }
+        }else {
+            System.out.println("è vuota coglione");
+        }
+        return result;
+    }
+    @GetMapping("/productCategoryBrand")
+    public List<Product> getProductCategoryBrand(   @RequestParam(name = "catname")String catname, @RequestParam(name = "brands") List<String> brands) {
+        //TO-DO verificare che la categoria e brand esistano
+
+        List<Product> result = productService.getProductCategoryBrands(catname, brands);
         if (!result.isEmpty()) {
             for (Product p : result) {
                 System.out.println(p.getName());

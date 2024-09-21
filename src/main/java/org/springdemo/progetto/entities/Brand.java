@@ -2,6 +2,7 @@ package org.springdemo.progetto.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,6 +25,17 @@ public class Brand {
     @Column(name = "address", nullable = true, length = 150)
     private String address;
 
-    @OneToMany(targetEntity = Product.class, mappedBy = "brand", cascade = CascadeType.MERGE)
+    @JsonIgnore
+    @OneToMany(targetEntity = Product.class, mappedBy = "brand", cascade = CascadeType.ALL)
     private Set<Product> prodotti;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Brand brand = (Brand) o;
+
+        return name.equals(brand.name);
+    }
 }

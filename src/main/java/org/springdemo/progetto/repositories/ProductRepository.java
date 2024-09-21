@@ -17,8 +17,14 @@ public interface ProductRepository  extends JpaRepository<Product, Integer> {
     //1 elemento
     List<Product> findByName(String name);
     List<Product> findByBrand(Brand brand);
-    @Query("select p from Product p where p.category.name = :catName")
-    List<Product> findByCategoryName(@Param("catName") String catName);
+    @Query("select p from Product p where p.category.name = :catname")
+    List<Product> findByCategoryName(@Param("catname") String catname);
+
+    @Query("select p from Product p where p.category.name = :catname and p.brand.name  in :brands ")
+    List<Product> findByCategoryNameAndByBrandIn( @Param("catname")String category,  @Param("brands")List<String> brands);
+
+
+
     List<Product> findByCategory(Category category);
     List<Product> findByPriceLessThanEqualAndPriceGreaterThanEqual(double priceL,double priceG);
     //2 elementi

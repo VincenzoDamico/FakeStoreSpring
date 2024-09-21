@@ -23,9 +23,15 @@ public class ProductService {
         return productRepository.findAll();
     }
     @Transactional(readOnly = true)
-    public List<Product> getProduct(String catName) {
-        return productRepository.findByCategoryName(catName);
+    public List<Product> getProductCategory(String catname) {
+        return productRepository.findByCategoryName(catname);
     }
+
+    @Transactional(readOnly = true)
+    public List<Product> getProductCategoryBrands(String catname,List<String> brands) {
+        return productRepository.findByCategoryNameAndByBrandIn(catname,brands);
+    }
+
     /*
     @Transactional(readOnly = true)
     public List<Product> getProduct(String name) {
