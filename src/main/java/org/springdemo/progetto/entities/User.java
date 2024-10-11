@@ -35,7 +35,7 @@ public class User {
     @Column(name = "cap", nullable = true, length = 5)
     private String cap;
 
-    @OneToMany(targetEntity = Order_bucket.class, mappedBy = "user", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.LAZY,targetEntity = Order_bucket.class, mappedBy = "user", cascade = CascadeType.ALL)
  //  @JoinColumn(name ="user")
     List<Order_bucket> purchases;
 }

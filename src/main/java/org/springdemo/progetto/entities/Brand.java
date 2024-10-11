@@ -26,7 +26,7 @@ public class Brand {
     private String address;
 
     @JsonIgnore
-    @OneToMany(targetEntity = Product.class, mappedBy = "brand", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,targetEntity = Product.class, mappedBy = "brand", cascade = CascadeType.ALL)
     private Set<Product> prodotti;
 
     @Override

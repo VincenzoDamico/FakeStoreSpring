@@ -26,7 +26,7 @@ public class Order_bucket {
     @Column(name = "total_price", nullable = true)
     private double total_price;
 
-    @OneToMany(targetEntity = Order_item.class,mappedBy = "order_bucket", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.LAZY,targetEntity = Order_item.class,mappedBy = "order_bucket", cascade = CascadeType.ALL)
     private List<Order_item> order_bucket;
 
     @ManyToOne

@@ -46,7 +46,7 @@ public class Product {
     @JoinColumn(name = "brand")
     private Brand brand;
 
-    @OneToMany(targetEntity = Order_item.class, mappedBy = "product", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.LAZY,targetEntity = Order_item.class, mappedBy = "product", cascade = CascadeType.ALL)
     //@JoinColumn(name = "product")
     private List<Order_item> listOrder;
 

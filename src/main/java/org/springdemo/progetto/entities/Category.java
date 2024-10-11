@@ -20,7 +20,7 @@ public class Category {
     @Column(name = "description", nullable = true, length = 250)
     private String description;
     @JsonIgnore
-    @OneToMany(targetEntity = Product.class, mappedBy = "category",cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,targetEntity = Product.class, mappedBy = "category",cascade=CascadeType.ALL)
     private Set<Product> prodottiC;
 
     @Override

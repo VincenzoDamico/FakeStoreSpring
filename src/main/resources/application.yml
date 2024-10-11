@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: progetto
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:8080/realms/fake-store"
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/progetto
+    username: postgres
+    password: vincenzo
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  auth:
+    converter:
+      resource-id: rest-users
+      principle-attribute: preferred_username
+
+keycloak:
+  realm: "fake-store"
+  domain: "http://localhost:8080"
+  clientId: "api-store"
+  clientSecret: "EPIZUwiZGVsAYMiPx7omEIZLVP2sqTNe"
+
+server:
+  port: 9090
+
+
