@@ -3,6 +3,7 @@ import lombok.AllArgsConstructor;
 import org.springdemo.progetto.entities.User;
 import org.springdemo.progetto.services.AccountingService;
 import org.springdemo.progetto.services.KeycloakService;
+import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
 import org.springdemo.progetto.support.UserRegistrationRequest;
 import org.springdemo.progetto.support.exeception.MailUserAlreadyExistsException;
@@ -39,14 +40,14 @@ public class AccountingController {
                 res.setPhone(cel);
                 res = keycloakService.addUser(res, req.getPassword());
                 if (res == null) {
-                    return new ResponseEntity<>("ERROR_KEYCLOCK", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(MyConstant.ERR_KEYCLOAK, HttpStatus.BAD_REQUEST);
                 }
             } else {
-                return new ResponseEntity<>("FIELD_ARE_INCORECT_OR_MAIL_USER_ALREADY_EXISTS", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(MyConstant.FIELD_INCORRECT+"_OR_"+MyConstant.ERR_EMAIL, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (MailUserAlreadyExistsException e) {
-            return new ResponseEntity<>(new ResponseMessage("ERROR_MAIL_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_EMAIL), HttpStatus.BAD_REQUEST);
         }
     }
 

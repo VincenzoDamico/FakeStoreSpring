@@ -40,7 +40,6 @@ public class ProductService {
             throw new ProductNotExistException();
         }
         if(prod.getStock_quantity()<quant) {
-            System.out.println( "ecc2");
             throw new QuantityNonSufficientlyException();
         }
 

@@ -28,7 +28,6 @@ public class KeyCloackJwtAuthenticationConverter implements Converter<Jwt, Abstr
 
     @Value("${jwt.auth.converter.resource-id}")
     private String resourceId;
-//private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter=new JwtGrantedAuthoritiesConverter();
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt source) {
         return new JwtAuthenticationToken(

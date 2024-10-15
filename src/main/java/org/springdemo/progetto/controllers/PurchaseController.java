@@ -6,6 +6,7 @@ import org.springdemo.progetto.entities.Order_item;
 import org.springdemo.progetto.entities.User;
 import org.springdemo.progetto.services.AccountingService;
 import org.springdemo.progetto.services.OrderBucketService;
+import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.exeception.ProductNotExistException;
 import org.springdemo.progetto.support.exeception.QuantityNonSufficientlyException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +32,14 @@ public class PurchaseController {
     @Autowired
     private OrderBucketService orderBucketService;
     @PostMapping()
-    public ResponseEntity<?> purchase(@NotNull @AuthenticationPrincipal Jwt jwt,@NotNull @RequestBody List< Order_item> orderItemList){
-        //TO-DO verificare che i prodotti esistano e la uquantità richiesta sia coretta
-
-
+    public ResponseEntity<?> purchase(@NotNull @AuthenticationPrincipal Jwt jwt,@NotNull @RequestBody List<Order_item> orderItemList){
         String email=jwt.getClaimAsString("preferred_username");
 
         System.out.println( orderItemList);
 
         List<User> lUser=accountingService.getUserEmail(email);
         if(lUser.isEmpty()) {
-            return new ResponseEntity<>("USER_NOT_EXISTS", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(MyConstant.ERR_USER, HttpStatus.BAD_REQUEST);
         }
         User s=lUser.getFirst();
 
@@ -53,12 +51,12 @@ public class PurchaseController {
             orderBucket=orderBucketService.addOrderItem(orderBucket);
             s.getPurchases().add(orderBucket);
         }catch ( ProductNotExistException e){
-            return new ResponseEntity<>("PRODUCT_NOT_EXISTS", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(MyConstant.ERR_PROD, HttpStatus.BAD_REQUEST);
         }catch (QuantityNonSufficientlyException q){
-            return new ResponseEntity<>("STOCK_SHORTAGE", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(MyConstant.ERR_STOCK, HttpStatus.BAD_REQUEST);
 
         }
-        return new ResponseEntity<>("CART_UPDATED", HttpStatus.OK);
+        return new ResponseEntity<>(MyConstant.CAT, HttpStatus.OK);
     }
 
 

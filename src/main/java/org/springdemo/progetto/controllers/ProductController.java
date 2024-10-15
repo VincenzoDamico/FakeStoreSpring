@@ -1,10 +1,16 @@
 package org.springdemo.progetto.controllers;
 
 import org.springdemo.progetto.entities.Product;
+import org.springdemo.progetto.services.BrandService;
+import org.springdemo.progetto.services.CategoryService;
 import org.springdemo.progetto.services.ProductService;
 
+import org.springdemo.progetto.support.MyConstant;
+import org.springdemo.progetto.support.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,8 +25,10 @@ import java.util.StringTokenizer;
 public class ProductController {
     @Autowired
     private ProductService productService;
-
-
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private BrandService brandService;
     @GetMapping("/productAll")
     public List<Product> getAllProduct() {
 
@@ -31,33 +39,28 @@ public class ProductController {
     }
 
     @GetMapping("/productCategory")
-    public List<Product> getProductCategory(   @RequestParam(name = "catname")String catname) {
-        //TO-DO verificare che la categoeia esista
-
-
-        List<Product> result =  productService.getProductCategory(catname);
-        if (!result.isEmpty()) {
-            for (Product p : result) {
-                System.out.println(p.getName());
-            }
-        }else {
-            System.out.println("è vuota coglione");
+    public ResponseEntity<?> getProductCategory(   @RequestParam(name = "catname")String catname) {
+        if (categoryService.getCatName(catname).isEmpty()){
+            return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_CAT), HttpStatus.BAD_REQUEST);
         }
-        return result;
+        List<Product> result =  productService.getProductCategory(catname);
+        return  new ResponseEntity<>(result, HttpStatus.OK);
     }
     @GetMapping("/productCategoryBrand")
-    public List<Product> getProductCategoryBrand(   @RequestParam(name = "catname")String catname, @RequestParam(name = "brands") List<String> brands) {
-        //TO-DO verificare che la categoria e brand esistano
-
-        List<Product> result = productService.getProductCategoryBrands(catname, brands);
-        if (!result.isEmpty()) {
-            for (Product p : result) {
-                System.out.println(p.getName());
-            }
-        }else {
-            System.out.println("è vuota coglione");
+    public ResponseEntity<?> getProductCategoryBrand(   @RequestParam(name = "catname")String catname, @RequestParam(name = "brands") List<String> brands) {
+        if (categoryService.getCatName(catname).isEmpty() && controll(brands)) {
+            return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_CAT+"_OR_"+MyConstant.ERR_BRAND), HttpStatus.BAD_REQUEST);
         }
-        return result;
+        List<Product> result = productService.getProductCategoryBrands(catname, brands);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    private boolean controll(List<String> brands) {
+        for (String b:brands){
+            if (brandService.getBrandName(b).isEmpty()){
+                return false;
+            }
+        }
+        return  true;
+    }
 }
