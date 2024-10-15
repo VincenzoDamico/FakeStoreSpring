@@ -16,4 +16,6 @@ public class BrandService {
     public List<Brand> getBrandCat(String catName) {
         return brandRapository.findByProdCategory(catName);
     }
+    @Transactional(readOnly = true)
+    public List<Brand> getBrandName(String name){return brandRapository.findByName(name);}
 }

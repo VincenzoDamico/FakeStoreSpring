@@ -71,7 +71,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(
-                                        "/ApiUsers", "ApiProduct/productAll", "ApiProduct/productCategory", "/ApiBrand/brandCategory", "ApiProduct/productCategoryBrand"
+                                "/ApiUsers", "ApiProduct/productAll", "ApiProduct/productCategory", "/ApiBrand/brandCategory", "ApiProduct/productCategoryBrand"
                                 )
                                 .permitAll()
                                 .anyRequest()

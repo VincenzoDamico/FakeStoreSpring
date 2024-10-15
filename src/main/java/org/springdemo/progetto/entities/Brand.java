@@ -38,4 +38,5 @@ public class Brand {
 
         return name.equals(brand.name);
     }
+
 }

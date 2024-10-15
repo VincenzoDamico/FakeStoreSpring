@@ -27,17 +27,22 @@ public class AccountingController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid UserRegistrationRequest req) {
+
         try {
-            User res=req.getUser();
-            System.out.println(accountingService.getUserEmail(res.getEmail()).isEmpty());
-            if(res!=null && accountingService.getUserEmail(res.getEmail()).isEmpty()) {
-                res=keycloakService.addUser(res,req.getPassword());
-                if(res==null){
+            User res = req.getUser();
+
+            if (res != null&&controlEl(res) && accountingService.getUserEmail(res.getEmail()).isEmpty()) {
+                String cel=res.getPhone().replace("-","").replace(" ","");
+                if (!cel.contains("+")) {
+                    cel="+39"+cel;
+                }
+                res.setPhone(cel);
+                res = keycloakService.addUser(res, req.getPassword());
+                if (res == null) {
                     return new ResponseEntity<>("ERROR_KEYCLOCK", HttpStatus.BAD_REQUEST);
                 }
-                System.out.println("qua");
-            }else{
-                return new ResponseEntity<>("ERROR_MAIL_USER_ALREADY_EXISTS", HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>("FIELD_ARE_INCORECT_OR_MAIL_USER_ALREADY_EXISTS", HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (MailUserAlreadyExistsException e) {
@@ -50,11 +55,10 @@ public class AccountingController {
         return accountingService.getAllUsers();
     }
 
-    @GetMapping("/hello")
-   // @PreAuthorize("hasRole('ROLE_rest_users')")
-    public String hello(@AuthenticationPrincipal Jwt jwt) {
-        return jwt.getClaimAsString("preferred_username");
+    private boolean controlEl(User s) {
+        String regexEmail ="^[-A-Za-z0-9._%&$+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        String regexCell = "^([\\+][0-9][0-9])?[0-9][0-9][0-9][-\\s\\.]?[0-9][-\\s\\.]?[0-9][0-9][-\\s\\.]?[0-9][-\\s\\.]?[0-9][0-9][0-9]$";
+        String regexCap = "^\\d{5}$";
+        return s.getEmail().matches(regexEmail) && s.getCap().matches(regexCap) && s.getPhone().matches(regexCell);
     }
-
-
 }

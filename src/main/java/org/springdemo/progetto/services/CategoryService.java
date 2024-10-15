@@ -21,5 +21,6 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-
+    @Transactional(readOnly = true)
+    public List<Category> getCatName(String name){return categoryRepository.findByName(name);}
 }

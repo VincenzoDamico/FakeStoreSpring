@@ -15,7 +15,7 @@ public interface ProductRepository  extends JpaRepository<Product, Integer> {
     //implemento le query che sto facendo come se fossero filtri
     // do priorita categoria1 prezzo2 brand3 nome 4
     //1 elemento
-    List<Product> findByName(String name);
+    Product findById(int id);
     List<Product> findByBrand(Brand brand);
     @Query("select p from Product p where p.category.name = :catname")
     List<Product> findByCategoryName(@Param("catname") String catname);
@@ -24,6 +24,7 @@ public interface ProductRepository  extends JpaRepository<Product, Integer> {
     List<Product> findByCategoryNameAndByBrandIn( @Param("catname")String category,  @Param("brands")List<String> brands);
 
 
+/*
 
     List<Product> findByCategory(Category category);
     List<Product> findByPriceLessThanEqualAndPriceGreaterThanEqual(double priceL,double priceG);
@@ -48,5 +49,6 @@ public interface ProductRepository  extends JpaRepository<Product, Integer> {
     List<Product> findByPriceLessThanEqualAndPriceGreaterThanEqualAndBrandAndName( double priceL, double priceG, Brand brand,String name);
     //4 el
     List<Product> findByCategoryAndPriceLessThanEqualAndPriceGreaterThanEqualAndBrandAndName(Category category, double priceL, double priceG, Brand brand,String name);
+*/
 
 }
