@@ -14,6 +14,7 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springdemo.progetto.entities.User;
+import org.springdemo.progetto.support.exeception.FieldIncorrectException;
 import org.springdemo.progetto.support.exeception.MailUserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,20 @@ public class KeycloakService {
         this.keycloak = keycloak;
     }
 
-    public User addUser(User userToAdd, String password) throws MailUserAlreadyExistsException {
+    public User addUser(User userToAdd, String password) {
+        if (accountingService.getUserEmail(userToAdd.getEmail()).isEmpty()) {
+            if(controlEl(userToAdd)) {
+                String cel = userToAdd.getPhone().replace("-", "").replace(" ", "");
+                if (!cel.contains("+")) {
+                    cel = "+39" + cel;
+                }
+                userToAdd.setPhone(cel);
+            }else{
+                throw new FieldIncorrectException();
+            }
+        }else{
+            throw new MailUserAlreadyExistsException();
+        }
         try {
 //definizione dello user
             UserRepresentation user = new UserRepresentation();
@@ -64,11 +78,16 @@ public class KeycloakService {
             }
 
 
-        } catch (
-                MailUserAlreadyExistsException e) { //sono sicuro che non ci sia questa eventualità ma comunque l'integro
+        } catch (MailUserAlreadyExistsException e) { //sono sicuro che non ci sia questa eventualità ma comunque l'integro
             throw new MailUserAlreadyExistsException();
         }
         return null;
+    }
+    private boolean controlEl(User s) {
+        String regexEmail ="^[-A-Za-z0-9._%&$+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        String regexCell = "^([\\+][0-9][0-9])?[0-9][0-9][0-9][-\\s\\.]?[0-9][-\\s\\.]?[0-9][0-9][-\\s\\.]?[0-9][-\\s\\.]?[0-9][0-9][0-9]$";
+        String regexCap = "^\\d{5}$";
+        return s.getEmail().matches(regexEmail) && s.getCap().matches(regexCap) && s.getPhone().matches(regexCell);
     }
 }
 

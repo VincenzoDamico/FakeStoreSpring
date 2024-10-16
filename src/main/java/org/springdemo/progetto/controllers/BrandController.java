@@ -7,6 +7,7 @@ import org.springdemo.progetto.services.BrandService;
 import org.springdemo.progetto.services.CategoryService;
 import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
+import org.springdemo.progetto.support.exeception.CategoryInesistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +30,11 @@ public class BrandController {
 
     @GetMapping("/brandCategory")
     public ResponseEntity<?> getProductCategory(@RequestParam(name = "category")String category) {
-        if (categoryService.getCatName(category).isEmpty()){
+        try {
+            List<Brand> result =  brandService.getBrandCat(category);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }catch (CategoryInesistenteException c){
             return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_CAT), HttpStatus.BAD_REQUEST);
         }
-        List<Brand> result =  brandService.getBrandCat(category);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

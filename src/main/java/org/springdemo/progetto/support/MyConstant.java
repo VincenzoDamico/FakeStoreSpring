@@ -11,6 +11,7 @@ public class MyConstant {
     public static final String ERR_PROD="PRODUCTS_DOES_NOT_EXISTS";
     public static final String ERR_USER="USER_DOES_NOT_EXIST";
     public static final String ERR_STOCK="STOCK_SHORTAGE";
+    public static final String ERR_PARMAM="PARAM_ERROR";
 
     public static final String CAT="CART_UPDATED";
 

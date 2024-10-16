@@ -6,11 +6,15 @@ import org.springdemo.progetto.entities.Product;
 import org.springdemo.progetto.repositories.BrandRepository;
 import org.springdemo.progetto.repositories.CategoryRepository;
 import org.springdemo.progetto.repositories.ProductRepository;
+import org.springdemo.progetto.support.MyConstant;
+import org.springdemo.progetto.support.ResponseMessage;
 import org.springdemo.progetto.support.exeception.BrandInesistenteException;
 import org.springdemo.progetto.support.exeception.CategoryInesistenteException;
 import org.springdemo.progetto.support.exeception.ProductNotExistException;
 import org.springdemo.progetto.support.exeception.QuantityNonSufficientlyException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,13 +38,34 @@ public class ProductService {
     }
     @Transactional(readOnly = true)
     public List<Product> getProductCategory(String catname) {
+        if (categoryService.getCatName(catname).isEmpty()) {
+            throw new CategoryInesistenteException();
+        }
         return productRepository.findByCategoryName(catname);
     }
 
     @Transactional(readOnly = true)
     public List<Product> getProductCategoryBrands(String catname,List<String> brands) {
+        if (categoryService.getCatName(catname).isEmpty() ) {
+            throw new CategoryInesistenteException();
+        }
+        if (!controll(brands)){
+            throw new  BrandInesistenteException();
+        }
         return productRepository.findByCategoryNameAndByBrandIn(catname,brands);
     }
+    private boolean controll(List<String> brands) {
+        for (String b:brands){
+            if (brandService.getBrandName(b).isEmpty()){
+                return false;
+            }
+        }
+        return  true;
+    }
+
+
+
+
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public Product updateQuantity(int quant, Product p) throws ProductNotExistException, QuantityNonSufficientlyException {
          Product prod=productRepository.findById(p.getId());

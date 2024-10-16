@@ -28,34 +28,31 @@ import java.util.StringTokenizer;
 public class ProductController {
     @Autowired
     private ProductService productService;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private BrandService brandService;
     @GetMapping("/productAll")
     public List<Product> getAllProduct() {
-
-       for(Product p: productService.getAllProduct()){
-           System.out.println(p);
-       }
         return productService.getAllProduct();
     }
 
     @GetMapping("/productCategory")
     public ResponseEntity<?> getProductCategory(   @RequestParam(name = "catname")String catname) {
-        if (categoryService.getCatName(catname).isEmpty()){
+        try {
+            List<Product> result = productService.getProductCategory(catname);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }catch (CategoryInesistenteException c){
             return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_CAT), HttpStatus.BAD_REQUEST);
         }
-        List<Product> result =  productService.getProductCategory(catname);
-        return  new ResponseEntity<>(result, HttpStatus.OK);
     }
+
     @GetMapping("/productCategoryBrand")
     public ResponseEntity<?> getProductCategoryBrand(   @RequestParam(name = "catname")String catname, @RequestParam(name = "brands") List<String> brands) {
-        if (categoryService.getCatName(catname).isEmpty() && controll(brands)) {
-            return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_CAT+"_OR_"+MyConstant.ERR_BRAND), HttpStatus.BAD_REQUEST);
+        try {
+            List<Product> result = productService.getProductCategoryBrands(catname, brands);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }catch(CategoryInesistenteException c){
+            return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_CAT), HttpStatus.BAD_REQUEST);
+        }catch(BrandInesistenteException b){
+            return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_BRAND), HttpStatus.BAD_REQUEST);
         }
-        List<Product> result = productService.getProductCategoryBrands(catname, brands);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @PreAuthorize("hasAnyAuthority('admin')")
     @PostMapping("/AddProduct")
@@ -82,14 +79,5 @@ public class ProductController {
         }catch (BrandInesistenteException e){
             return new ResponseEntity<> (MyConstant.ERR_BRAND,HttpStatus.BAD_REQUEST);
         }
-    }
-
-    private boolean controll(List<String> brands) {
-        for (String b:brands){
-            if (brandService.getBrandName(b).isEmpty()){
-                return false;
-            }
-        }
-        return  true;
     }
 }

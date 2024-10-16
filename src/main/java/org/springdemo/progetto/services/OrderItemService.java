@@ -16,8 +16,7 @@ public class OrderItemService {
     @Autowired
     private ProductService productService;
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
-    public Order_item  addOrderItem(Order_item or) throws ProductNotExistException,QuantityNonSufficientlyException {
-
+    public Order_item  addOrderItem(Order_item or) {
         try {
            Product p=productService.updateQuantity(or.getQuantity(), or.getProduct());
            // lo faccio in modo che non abbia problemi con gli id che vengono generati al momento della creazione dell'oggetto

@@ -1,4 +1,5 @@
 package org.springdemo.progetto.controllers;
+
 import lombok.AllArgsConstructor;
 import org.springdemo.progetto.entities.User;
 import org.springdemo.progetto.services.AccountingService;
@@ -6,6 +7,7 @@ import org.springdemo.progetto.services.KeycloakService;
 import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
 import org.springdemo.progetto.support.UserRegistrationRequest;
+import org.springdemo.progetto.support.exeception.FieldIncorrectException;
 import org.springdemo.progetto.support.exeception.MailUserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,24 +32,22 @@ public class AccountingController {
     public ResponseEntity<?> create(@RequestBody @Valid UserRegistrationRequest req) {
 
         try {
+            if (req == null) {
+                return new ResponseEntity<>(MyConstant.ERR_PARMAM, HttpStatus.BAD_REQUEST);
+            }
             User res = req.getUser();
-
-            if (res != null&&controlEl(res) && accountingService.getUserEmail(res.getEmail()).isEmpty()) {
-                String cel=res.getPhone().replace("-","").replace(" ","");
-                if (!cel.contains("+")) {
-                    cel="+39"+cel;
-                }
-                res.setPhone(cel);
-                res = keycloakService.addUser(res, req.getPassword());
-                if (res == null) {
-                    return new ResponseEntity<>(MyConstant.ERR_KEYCLOAK, HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                return new ResponseEntity<>(MyConstant.FIELD_INCORRECT+"_OR_"+MyConstant.ERR_EMAIL, HttpStatus.BAD_REQUEST);
+            if (res == null) {
+                return new ResponseEntity<>(MyConstant.ERR_PARMAM, HttpStatus.BAD_REQUEST);
+            }
+            res = keycloakService.addUser(res, req.getPassword());
+            if (res == null) {
+                return new ResponseEntity<>(MyConstant.ERR_KEYCLOAK, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (MailUserAlreadyExistsException e) {
             return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_EMAIL), HttpStatus.BAD_REQUEST);
+        } catch (FieldIncorrectException e) {
+            return new ResponseEntity<>(MyConstant.FIELD_INCORRECT, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -56,10 +56,5 @@ public class AccountingController {
         return accountingService.getAllUsers();
     }
 
-    private boolean controlEl(User s) {
-        String regexEmail ="^[-A-Za-z0-9._%&$+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-        String regexCell = "^([\\+][0-9][0-9])?[0-9][0-9][0-9][-\\s\\.]?[0-9][-\\s\\.]?[0-9][0-9][-\\s\\.]?[0-9][-\\s\\.]?[0-9][0-9][0-9]$";
-        String regexCap = "^\\d{5}$";
-        return s.getEmail().matches(regexEmail) && s.getCap().matches(regexCap) && s.getPhone().matches(regexCell);
-    }
+
 }
