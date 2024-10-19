@@ -26,8 +26,8 @@ import static java.util.stream.Collectors.toSet;
 @Component
 public class KeyCloackJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-    @Value("${jwt.auth.converter.resource-id}")
-    private String resourceId;
+//    @Value("${jwt.auth.converter.resource-id}")
+//    private String resourceId;
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt source) {
         return new JwtAuthenticationToken(
@@ -44,14 +44,12 @@ public class KeyCloackJwtAuthenticationConverter implements Converter<Jwt, Abstr
         Map<String, Object> resourceAccess; //1
         Map<String, Object> resource; //2
         Collection<String> resourceRoles; //3
-        if ( jwt.getClaim("resource_access") == null) {
-            return Set.of();
-        }
         resourceAccess = jwt.getClaim("resource_access");
-        if ( resourceAccess.get(resourceId) == null) {
+
+        if (resourceAccess == null || resourceAccess.get("api-store") == null) {
             return Set.of();
         }
-        resource = (Map<String, Object>) resourceAccess.get(resourceId);
+        resource = (Map<String, Object>) resourceAccess.get("api-store");
 
         resourceRoles = (Collection<String>) resource.get("roles");
 

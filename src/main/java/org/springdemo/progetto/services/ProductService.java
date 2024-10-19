@@ -72,7 +72,7 @@ public class ProductService {
         if (prod == null || !prod.equals(p)) {
             throw new ProductNotExistException();
         }
-        if(prod.getStock_quantity()<quant) {
+        if(prod.getStock_quantity()<quant && quant>0) {
             throw new QuantityNonSufficientlyException();
         }
 
@@ -91,7 +91,12 @@ public class ProductService {
             }
             if (b == null) {
                 throw new BrandInesistenteException();
+            } if(p.getStock_quantity()<=0) {
+                throw new QuantityNonSufficientlyException();
             }
+            c.getProdottiC().remove(prod);
+            b.getProdotti().remove(prod);
+
             prod.setStock_quantity(p.getStock_quantity());
             prod.setName(p.getName());
             prod.setBrand(b);
@@ -99,7 +104,8 @@ public class ProductService {
             prod.setColor(p.getColor());
             prod.setSize(p.getSize());
             prod.setPrice(p.getPrice());
-
+            prod.setImage_path(p.getImage_path());
+            prod.setDescription(p.getDescription());
             c.getProdottiC().add(prod);
             b.getProdotti().add(prod);
         }
@@ -108,7 +114,7 @@ public class ProductService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void addProduct(Product p) {
         Product prod = productRepository.findById(p.getId());
-        if (prod == null || !prod.equals(p)) {
+        if (prod == null) {
             Category c = categoryService.getCatName(p.getCategory().getName()).getFirst();
             Brand b = brandService.getBrandName(p.getBrand().getName()).getFirst();
             if (c == null) {
@@ -117,16 +123,24 @@ public class ProductService {
             if (b == null) {
                 throw new BrandInesistenteException();
             }
-            prod = new Product();
-            prod.setStock_quantity(p.getStock_quantity());
-            prod.setName(p.getName());
-            prod.setBrand(b);
-            prod.setCategory(c);
-            prod.setColor(p.getColor());
-            prod.setSize(p.getSize());
-            prod.setPrice(p.getPrice());
-            c.getProdottiC().add(prod);
-            b.getProdotti().add(prod);
+            if (p.getStock_quantity()<=0){
+                throw new QuantityNonSufficientlyException();
+            }
+
+
+            Product newprod = new Product();
+            newprod.setStock_quantity(p.getStock_quantity());
+            newprod.setName(p.getName());
+            newprod.setBrand(b);
+            newprod.setCategory(c);
+            newprod.setColor(p.getColor());
+            newprod.setSize(p.getSize());
+            newprod.setPrice(p.getPrice());
+            newprod.setImage_path(p.getImage_path());
+            newprod.setDescription(p.getDescription());
+            productRepository.save(newprod);
+            c.getProdottiC().add(newprod);
+            b.getProdotti().add(newprod);
         } else {
             if (prod.equals(p)) {
                 int q = p.getStock_quantity() + prod.getStock_quantity();

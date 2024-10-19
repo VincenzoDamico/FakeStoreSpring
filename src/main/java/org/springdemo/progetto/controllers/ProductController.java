@@ -9,17 +9,18 @@ import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
 import org.springdemo.progetto.support.exeception.BrandInesistenteException;
 import org.springdemo.progetto.support.exeception.CategoryInesistenteException;
+import org.springdemo.progetto.support.exeception.QuantityNonSufficientlyException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 @RestController
@@ -54,7 +55,7 @@ public class ProductController {
             return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_BRAND), HttpStatus.BAD_REQUEST);
         }
     }
-    @PreAuthorize("hasAnyAuthority('admin')")
+    @PreAuthorize("hasRole('shop')")
     @PostMapping("/AddProduct")
     public ResponseEntity<?> addProd(@RequestBody Product p){
         try {
@@ -65,9 +66,11 @@ public class ProductController {
             return new ResponseEntity<> (MyConstant.ERR_CAT,HttpStatus.BAD_REQUEST);
         }catch (BrandInesistenteException e){
             return new ResponseEntity<> (MyConstant.ERR_BRAND,HttpStatus.BAD_REQUEST);
+        }catch (QuantityNonSufficientlyException q){
+            return new ResponseEntity<> (MyConstant.ERR_STOCK,HttpStatus.BAD_REQUEST);
         }
     }
-    @PreAuthorize("hasAnyAuthority('admin')")
+    @PreAuthorize("hasRole('shop')")
     @PostMapping("/UpdateProduct")
     public ResponseEntity<?> updateProduct(@RequestBody Product p){
         try {
@@ -78,6 +81,8 @@ public class ProductController {
             return new ResponseEntity<> (MyConstant.ERR_CAT,HttpStatus.BAD_REQUEST);
         }catch (BrandInesistenteException e){
             return new ResponseEntity<> (MyConstant.ERR_BRAND,HttpStatus.BAD_REQUEST);
+        }catch (QuantityNonSufficientlyException q){
+            return new ResponseEntity<> (MyConstant.ERR_STOCK,HttpStatus.BAD_REQUEST);
         }
     }
 }
