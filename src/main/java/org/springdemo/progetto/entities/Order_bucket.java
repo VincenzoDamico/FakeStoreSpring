@@ -1,6 +1,7 @@
 package org.springdemo.progetto.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -15,11 +16,10 @@ public class Order_bucket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false)
     private int order_id;
-
     @Basic
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "order_date")
+    @Column(name = "order_date",nullable = false)
     private Date order_date;
 
     @Basic

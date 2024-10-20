@@ -2,6 +2,7 @@ package org.springdemo.progetto.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Setter;
 
@@ -12,7 +13,6 @@ import java.util.Set;
 @Table(name="category")
 @Entity
 public class Category {
-
     @Id
     @Column(name = "name", nullable = false, length = 50)
     private String name;

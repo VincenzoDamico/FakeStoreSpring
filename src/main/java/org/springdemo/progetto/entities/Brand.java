@@ -4,6 +4,7 @@ package org.springdemo.progetto.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import javax.validation.Valid;
