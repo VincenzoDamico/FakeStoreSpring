@@ -7,8 +7,10 @@ import org.springdemo.progetto.services.KeycloakService;
 import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
 import org.springdemo.progetto.support.UserRegistrationRequest;
-import org.springdemo.progetto.support.exeception.FieldIncorrectException;
+import org.springdemo.progetto.support.exeception.FieldUserIncorrectException;
 import org.springdemo.progetto.support.exeception.MailUserAlreadyExistsException;
+import org.springdemo.progetto.support.exeception.NullParameterExecption;
+import org.springdemo.progetto.support.exeception.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ import java.util.List;
 public class AccountingController {
     @Autowired
     private AccountingService accountingService;
-
+    @Autowired
     private KeycloakService keycloakService;
 
     @PostMapping
@@ -46,9 +48,24 @@ public class AccountingController {
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (MailUserAlreadyExistsException e) {
             return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_EMAIL), HttpStatus.BAD_REQUEST);
-        } catch (FieldIncorrectException e) {
+        } catch (FieldUserIncorrectException e) {
             return new ResponseEntity<>(MyConstant.FIELD_INCORRECT, HttpStatus.BAD_REQUEST);
         }
+    }
+    @PostMapping("/monInd")
+    public ResponseEntity<?> insIndir(@AuthenticationPrincipal Jwt jwt,@RequestParam(name = "cap")String cap,@RequestParam(name = "city") String city ,@RequestParam(name = "address") String address){
+       try {
+           String email = jwt.getClaimAsString("preferred_username");
+           accountingService.modAddressUser(email, cap, address, city);
+           return new ResponseEntity<>("", HttpStatus.OK);
+       }catch(UserNotExistsException e){
+           return new ResponseEntity<>(MyConstant.ERR_USER, HttpStatus.BAD_REQUEST);
+       }catch (FieldUserIncorrectException e){
+           return new ResponseEntity<>(MyConstant.FIELD_INCORRECT, HttpStatus.BAD_REQUEST);
+       }catch (NullParameterExecption p){
+           return new ResponseEntity<>(MyConstant.ERR_PARMAM, HttpStatus.BAD_REQUEST);
+
+       }
     }
 
     @GetMapping

@@ -4,6 +4,7 @@ import org.springdemo.progetto.entities.Order_bucket;
 import org.springdemo.progetto.entities.Order_item;
 import org.springdemo.progetto.services.OrderBucketService;
 import org.springdemo.progetto.support.MyConstant;
+import org.springdemo.progetto.support.exeception.NullParameterExecption;
 import org.springdemo.progetto.support.exeception.ProductNotExistException;
 import org.springdemo.progetto.support.exeception.QuantityNonSufficientlyException;
 import org.springdemo.progetto.support.exeception.UserNotExistsException;
@@ -14,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class PurchaseController {
     @Autowired
     private OrderBucketService orderBucketService;
     @PostMapping()
-    public ResponseEntity<?> purchase(@NotNull @AuthenticationPrincipal Jwt jwt,@NotNull @RequestBody List<Order_item> orderItemList){
+    public ResponseEntity<?> purchase( @AuthenticationPrincipal Jwt jwt, @RequestBody @Valid List<Order_item> orderItemList){
         String email=jwt.getClaimAsString("preferred_username");
         try {
             orderBucketService.addOrderItem(orderItemList,email);
@@ -35,6 +37,8 @@ public class PurchaseController {
             return new ResponseEntity<>(MyConstant.ERR_STOCK, HttpStatus.BAD_REQUEST);
         }catch (UserNotExistsException e){
             return new ResponseEntity<>(MyConstant.ERR_USER, HttpStatus.BAD_REQUEST);
+        }catch (NullParameterExecption e){
+            return new ResponseEntity<> (MyConstant.ERR_PARMAM,HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(MyConstant.CAT, HttpStatus.OK);
     }

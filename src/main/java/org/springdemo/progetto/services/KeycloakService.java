@@ -1,7 +1,5 @@
 package org.springdemo.progetto.services;
 
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +12,7 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springdemo.progetto.entities.User;
-import org.springdemo.progetto.support.exeception.FieldIncorrectException;
+import org.springdemo.progetto.support.exeception.FieldUserIncorrectException;
 import org.springdemo.progetto.support.exeception.MailUserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +45,7 @@ public class KeycloakService {
                 }
                 userToAdd.setPhone(cel);
             }else{
-                throw new FieldIncorrectException();
+                throw new FieldUserIncorrectException();
             }
         }else{
             throw new MailUserAlreadyExistsException();

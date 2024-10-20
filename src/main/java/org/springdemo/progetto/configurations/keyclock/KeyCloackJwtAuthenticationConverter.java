@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toSet;
 
 @Component
 public class KeyCloackJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-
+// @value non funzionano
 //    @Value("${jwt.auth.converter.resource-id}")
 //    private String resourceId;
     @Override

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Beans {
+    //non si sa perchè non funzionano
 //    @Value("${keycloak.domain}")
 //    static String serverUrl;
 //    @Value("${keycloak.realm}")

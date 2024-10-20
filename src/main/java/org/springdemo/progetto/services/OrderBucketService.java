@@ -4,6 +4,7 @@ import org.springdemo.progetto.entities.Order_bucket;
 import org.springdemo.progetto.entities.Order_item;
 import org.springdemo.progetto.entities.User;
 import org.springdemo.progetto.repositories.OrderBucketRepository;
+import org.springdemo.progetto.support.exeception.NullParameterExecption;
 import org.springdemo.progetto.support.exeception.ProductNotExistException;
 import org.springdemo.progetto.support.exeception.QuantityNonSufficientlyException;
 import org.springdemo.progetto.support.exeception.UserNotExistsException;
@@ -25,7 +26,8 @@ public class OrderBucketService {
     private OrderBucketRepository orderBucketRepository;
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public void addOrderItem(List<Order_item> orderItemList, String email)  {
-        try {
+            if(orderItemList==null ||email==null)
+                throw new NullParameterExecption();
 
             List<User> lUser=accountingService.getUserEmail(email);
             if(lUser.isEmpty()) {
@@ -47,9 +49,6 @@ public class OrderBucketService {
            orderBucketRepository.save(orderBucket);
             s.getPurchases().add(orderBucket);
 
-        } catch (QuantityNonSufficientlyException | ProductNotExistException e) {
-            throw e;
-        }
     }
     private double getTotalPrice(List<Order_item> orderItemList) {
         double res=0;

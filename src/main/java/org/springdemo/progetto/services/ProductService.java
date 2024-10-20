@@ -8,10 +8,7 @@ import org.springdemo.progetto.repositories.CategoryRepository;
 import org.springdemo.progetto.repositories.ProductRepository;
 import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
-import org.springdemo.progetto.support.exeception.BrandInesistenteException;
-import org.springdemo.progetto.support.exeception.CategoryInesistenteException;
-import org.springdemo.progetto.support.exeception.ProductNotExistException;
-import org.springdemo.progetto.support.exeception.QuantityNonSufficientlyException;
+import org.springdemo.progetto.support.exeception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +35,8 @@ public class ProductService {
     }
     @Transactional(readOnly = true)
     public List<Product> getProductCategory(String catname) {
+        if (catname==null)
+            throw new NullParameterExecption();
         if (categoryService.getCatName(catname).isEmpty()) {
             throw new CategoryInesistenteException();
         }
@@ -46,6 +45,8 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<Product> getProductCategoryBrands(String catname,List<String> brands) {
+        if (catname==null || brands==null)
+            throw new NullParameterExecption();
         if (categoryService.getCatName(catname).isEmpty() ) {
             throw new CategoryInesistenteException();
         }
@@ -67,7 +68,7 @@ public class ProductService {
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
-    public Product updateQuantity(int quant, Product p) throws ProductNotExistException, QuantityNonSufficientlyException {
+    public Product updateQuantity(int quant, Product p) {
          Product prod=productRepository.findById(p.getId());
         if (prod == null || !prod.equals(p)) {
             throw new ProductNotExistException();
@@ -82,6 +83,8 @@ public class ProductService {
     }
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void updateProduct(Product p) {
+        if (p==null)
+            throw new NullParameterExecption();
         Product prod = productRepository.findById(p.getId());
         if (prod != null ) {
             Category c = categoryService.getCatName(p.getCategory().getName()).getFirst();
@@ -113,6 +116,9 @@ public class ProductService {
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void addProduct(Product p) {
+        if (p==null){
+            throw new NullParameterExecption();
+        }
         Product prod = productRepository.findById(p.getId());
         if (prod == null) {
             Category c = categoryService.getCatName(p.getCategory().getName()).getFirst();

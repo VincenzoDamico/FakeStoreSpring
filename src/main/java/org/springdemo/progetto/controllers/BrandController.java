@@ -8,6 +8,7 @@ import org.springdemo.progetto.services.CategoryService;
 import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
 import org.springdemo.progetto.support.exeception.CategoryInesistenteException;
+import org.springdemo.progetto.support.exeception.NullParameterExecption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,6 @@ import java.util.StringTokenizer;
 public class BrandController {
     @Autowired
     private BrandService brandService;
-    @Autowired
-    private CategoryService categoryService;
 
     @GetMapping("/brandCategory")
     public ResponseEntity<?> getProductCategory(@RequestParam(name = "category")String category) {
@@ -35,6 +34,8 @@ public class BrandController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         }catch (CategoryInesistenteException c){
             return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_CAT), HttpStatus.BAD_REQUEST);
+        }catch (NullParameterExecption e){
+            return new ResponseEntity<> (MyConstant.ERR_PARMAM,HttpStatus.BAD_REQUEST);
         }
     }
 }

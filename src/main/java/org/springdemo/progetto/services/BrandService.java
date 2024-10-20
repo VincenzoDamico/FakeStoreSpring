@@ -5,6 +5,7 @@ import org.springdemo.progetto.repositories.BrandRepository;
 import org.springdemo.progetto.repositories.CategoryRepository;
 import org.springdemo.progetto.support.exeception.BrandInesistenteException;
 import org.springdemo.progetto.support.exeception.CategoryInesistenteException;
+import org.springdemo.progetto.support.exeception.NullParameterExecption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ public class BrandService {
     private CategoryService categoryService;
     @Transactional(readOnly = true)
     public List<Brand> getBrandCat(String catName) {
+        if(catName==null)
+            throw new NullParameterExecption();
+
         if (!categoryService.getCatName(catName).isEmpty()) {
             return brandRapository.findByProdCategory(catName);
         }else {
@@ -27,6 +31,8 @@ public class BrandService {
     }
     @Transactional(readOnly = true)
     public List<Brand> getBrandName(String name){
+        if(name==null)
+            throw new NullParameterExecption();
         List<Brand> res= brandRapository.findByName(name);
         if (res.isEmpty()){
             throw new BrandInesistenteException();
