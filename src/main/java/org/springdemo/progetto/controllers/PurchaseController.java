@@ -3,6 +3,7 @@ package org.springdemo.progetto.controllers;
 import org.springdemo.progetto.entities.Order_bucket;
 import org.springdemo.progetto.entities.Order_item;
 import org.springdemo.progetto.services.OrderBucketService;
+import org.springdemo.progetto.support.DTO.Order_ItemDTO;
 import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.exeception.NullParameterExecption;
 import org.springdemo.progetto.support.exeception.ProductNotExistException;
@@ -27,7 +28,7 @@ public class PurchaseController {
     @Autowired
     private OrderBucketService orderBucketService;
     @PostMapping()
-    public ResponseEntity<?> purchase( @AuthenticationPrincipal Jwt jwt, @RequestBody @Valid List<Order_item> orderItemList){
+    public ResponseEntity<?> purchase( @AuthenticationPrincipal Jwt jwt, @RequestBody @Valid List<Order_ItemDTO> orderItemList){
         String email=jwt.getClaimAsString("preferred_username");
         try {
             orderBucketService.addOrderItem(orderItemList,email);

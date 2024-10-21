@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springdemo.progetto.entities.User;
 import org.springdemo.progetto.services.AccountingService;
 import org.springdemo.progetto.services.KeycloakService;
+import org.springdemo.progetto.support.DTO.UserDTO;
 import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
 import org.springdemo.progetto.support.UserRegistrationRequest;
@@ -37,15 +38,15 @@ public class AccountingController {
             if (req == null) {
                 return new ResponseEntity<>(MyConstant.ERR_PARMAM, HttpStatus.BAD_REQUEST);
             }
-            User res = req.getUser();
+            UserDTO res = req.getUser();
             if (res == null) {
                 return new ResponseEntity<>(MyConstant.ERR_PARMAM, HttpStatus.BAD_REQUEST);
             }
-            res = keycloakService.addUser(res, req.getPassword());
-            if (res == null) {
+            User usernew = keycloakService.addUser(res, req.getPassword());
+            if (usernew == null) {
                 return new ResponseEntity<>(MyConstant.ERR_KEYCLOAK, HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>(res, HttpStatus.OK);
+            return new ResponseEntity<>(usernew, HttpStatus.OK);
         } catch (MailUserAlreadyExistsException e) {
             return new ResponseEntity<>(new ResponseMessage(MyConstant.ERR_EMAIL), HttpStatus.BAD_REQUEST);
         } catch (FieldUserIncorrectException e) {

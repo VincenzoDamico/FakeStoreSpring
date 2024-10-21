@@ -4,6 +4,7 @@ import org.springdemo.progetto.entities.Order_bucket;
 import org.springdemo.progetto.entities.Order_item;
 import org.springdemo.progetto.entities.User;
 import org.springdemo.progetto.repositories.OrderBucketRepository;
+import org.springdemo.progetto.support.DTO.Order_ItemDTO;
 import org.springdemo.progetto.support.exeception.NullParameterExecption;
 import org.springdemo.progetto.support.exeception.ProductNotExistException;
 import org.springdemo.progetto.support.exeception.QuantityNonSufficientlyException;
@@ -25,7 +26,7 @@ public class OrderBucketService {
     @Autowired
     private OrderBucketRepository orderBucketRepository;
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
-    public void addOrderItem(List<Order_item> orderItemList, String email)  {
+    public void addOrderItem(List<Order_ItemDTO> orderItemList, String email)  {
             if(orderItemList==null ||email==null)
                 throw new NullParameterExecption();
 
@@ -38,7 +39,7 @@ public class OrderBucketService {
             orderBucket.setUser(s);
 
             List<Order_item> l=new LinkedList<>();
-            for (Order_item or : orderItemList) {
+            for (Order_ItemDTO or : orderItemList) {
                 or.setOrder_bucket(orderBucket);
                 l.add(orderItemService.addOrderItem(or));
             }

@@ -22,6 +22,7 @@ public interface ProductRepository  extends JpaRepository<Product, Integer> {
 
     @Query("select p from Product p where p.category.name = :catname and p.brand.name  in :brands ")
     List<Product> findByCategoryNameAndByBrandIn( @Param("catname")String category,  @Param("brands")List<String> brands);
+    List<Product>findByCategoryAndBrandAndNameAndPriceAndColorAndSize(Category category,Brand brand, String name,double price,String color ,int size);
 
 
 /*

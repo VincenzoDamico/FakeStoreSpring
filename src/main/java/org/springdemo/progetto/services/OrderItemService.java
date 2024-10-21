@@ -3,6 +3,7 @@ package org.springdemo.progetto.services;
 import org.springdemo.progetto.entities.Order_item;
 import org.springdemo.progetto.entities.Product;
 import org.springdemo.progetto.repositories.OrderItemRepository;
+import org.springdemo.progetto.support.DTO.Order_ItemDTO;
 import org.springdemo.progetto.support.exeception.ProductNotExistException;
 import org.springdemo.progetto.support.exeception.QuantityNonSufficientlyException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class OrderItemService {
     @Autowired
     private ProductService productService;
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
-    public Order_item  addOrderItem(Order_item or) {
+    public Order_item  addOrderItem(Order_ItemDTO or) {
         try {
            Product p=productService.updateQuantity(or.getQuantity(), or.getProduct());
            // lo faccio in modo che non abbia problemi con gli id che vengono generati al momento della creazione dell'oggetto

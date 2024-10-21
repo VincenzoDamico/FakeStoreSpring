@@ -5,6 +5,7 @@ import org.springdemo.progetto.services.BrandService;
 import org.springdemo.progetto.services.CategoryService;
 import org.springdemo.progetto.services.ProductService;
 
+import org.springdemo.progetto.support.DTO.ProductDTO;
 import org.springdemo.progetto.support.MyConstant;
 import org.springdemo.progetto.support.ResponseMessage;
 import org.springdemo.progetto.support.exeception.*;
@@ -61,7 +62,7 @@ public class ProductController {
     }
     @PreAuthorize("hasRole('shop')")
     @PostMapping("/AddProduct")
-    public ResponseEntity<?> addProd(@RequestBody @Valid Product p){
+    public ResponseEntity<?> addProd(@RequestBody @Valid @NotNull ProductDTO p){
         try {
             productService.addProduct(p);
             return new ResponseEntity<>("Product_added",HttpStatus.OK);
@@ -78,7 +79,7 @@ public class ProductController {
     }
     @PreAuthorize("hasRole('shop')")
     @PostMapping("/UpdateProduct")
-    public ResponseEntity<?> updateProduct(@RequestBody @Valid Product p){
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDTO p){
         try {
             productService.updateProduct(p);
             return new ResponseEntity<>("Product_added",HttpStatus.OK);

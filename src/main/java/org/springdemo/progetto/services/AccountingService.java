@@ -2,6 +2,7 @@ package org.springdemo.progetto.services;
 
 import org.springdemo.progetto.entities.User;
 import org.springdemo.progetto.repositories.UserRepository;
+import org.springdemo.progetto.support.DTO.UserDTO;
 import org.springdemo.progetto.support.exeception.FieldUserIncorrectException;
 import org.springdemo.progetto.support.exeception.MailUserAlreadyExistsException;
 import org.springdemo.progetto.support.exeception.NullParameterExecption;
@@ -21,7 +22,7 @@ public class AccountingService {
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public User registerUser(User user) throws MailUserAlreadyExistsException {
+    public User registerUser(UserDTO user) throws MailUserAlreadyExistsException {
         if ( userRepository.existsByEmail(user.getEmail()) ) {
             throw new MailUserAlreadyExistsException();
         }

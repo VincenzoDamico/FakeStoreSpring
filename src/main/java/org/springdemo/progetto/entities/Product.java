@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
 @Entity
+@NotNull
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
